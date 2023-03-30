@@ -29,7 +29,7 @@
         </router-link>
       </div>
         <div class="lead pointer">
-          <router-link class="text-dark text-decoration-none" to="`/product-edit/${product.id}`" >
+          <router-link class="text-dark text-decoration-none" :to="'/product-edit/'+product.id" >
             <span>Update </span>
             <font-awesome-icon icon="fa-solid fa-wrench" />
           </router-link>
