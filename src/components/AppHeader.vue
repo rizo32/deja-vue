@@ -2,7 +2,7 @@
   <header class="header">
     <nav class="navbar navbar-expand-md bg-info navbar-light">
       <div class="container">
-        <router-link to="/"><img src="target-logo.png" height="50px"/></router-link>
+        <router-link to="/"><img class="logo" src="target-logo.png"/></router-link>
         <button
           class="navbar-toggler"
           type="button"
@@ -14,9 +14,9 @@
         <div class="collapse navbar-collapse" id="navmenu">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item px-3" :class="{ 'fw-bold': $route.path === '/products' }">
-              <Link to="/products" class="nav-link text-light">
+              <router-link to="/products" class="nav-link text-light">
                 Our products
-              </Link>
+              </router-link>
             </li>
             <li class="nav-item px-3" :class="{ 'fw-bold': $route.path === '/product-create' }">
               <router-link to="/product-create" class="nav-link text-light">Inventory mgmt</router-link>
