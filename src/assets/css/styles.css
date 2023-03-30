@@ -5,3 +5,7 @@ li.no-bullets {
 .pointer {
   cursor: pointer;
 }
+
+.logo {
+  height: 50px;
+}
