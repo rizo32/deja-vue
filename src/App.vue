@@ -1,7 +1,7 @@
 <template>
   <div>
     <app-header :routes="routes" title="Target Canada" />
-    <router-view :products="products.products" />
+    <router-view :products="products" :onDelete="handleProductDeleted" />
     <app-footer :year="currentYear" />
   </div>
 </template>
@@ -20,13 +20,9 @@ export default {
   components: {
     AppHeader,
     AppFooter
-    // products
   },
   data () {
     return {
-      routes: [
-        // define your routes here
-      ],
       currentYear: new Date().getFullYear(),
       products: []
     }
@@ -34,12 +30,18 @@ export default {
   created () {
     axios.get('data/products-db.json')
       .then(response => {
-        this.products = response.data
+        this.products = response.data.products
         // console.log(response.data)
       })
       .catch(error => {
         console.log(error)
       })
+  },
+  methods: {
+    handleProductDeleted (id) {
+      const updatedProducts = this.products.filter(product => product.id !== id)
+      this.products = updatedProducts
+    }
   }
 }
 </script>
