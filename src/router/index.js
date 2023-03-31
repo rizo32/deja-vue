@@ -1,7 +1,9 @@
+import EditProduct from '@/components/EditProduct'
+import AddProduct from '@/components/AddProduct'
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import ProductsView from '../views/ProductsView.vue'
-import ProductView from '../views/ProductView.vue'
+import HomeView from '@/views/HomeView.vue'
+import ProductsView from '@/views/ProductsView.vue'
+import ProductView from '@/views/ProductView.vue'
 
 const routes = [
   {
@@ -20,9 +22,14 @@ const routes = [
     component: ProductView
   },
   {
+    path: '/product-create',
+    name: 'product-create',
+    component: AddProduct
+  },
+  {
     path: '/product-edit/:id',
     name: 'product-edit',
-    component: ProductView
+    component: EditProduct
   }
 ]
 

@@ -22,7 +22,7 @@
         :is-required="true"
       />
       <search-bar
-        type="number"
+        type="number step=0.01"
         :value="newProduct.price"
         @onChange="handleValueChange"
         placeholder="ex. 99.99$"
@@ -54,7 +54,7 @@
 <script>
 import SearchBar from '@/components/SearchBar'
 import { ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'AddProduct',
@@ -62,9 +62,9 @@ export default {
     SearchBar
   },
   props: {
-
+    onProductAdd: Function
   },
-  setup () {
+  setup (props) {
     const newProduct = ref({
       name: '',
       price: '',
@@ -76,23 +76,29 @@ export default {
       const { name, value } = event.target
       newProduct.value = { ...newProduct.value, [name]: value }
     }
-    
+
     // Gestion de la soumission du formulaire
-    const route = useRoute()
+    const router = useRouter()
     const onSubmit = () => {
-      onProductAdd(newProduct.value)
+      props.onProductAdd(newProduct.value)
       newProduct.value = {
         name: '',
         price: '',
         description: '',
         category: ''
       }
-      route.push('/products')
+      router.push('/products')
+    }
+
+    return {
+      newProduct,
+      handleValueChange,
+      onSubmit
     }
   }
 }
 
 </script>
 <style>
-  
+
 </style>
