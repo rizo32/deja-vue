@@ -14,24 +14,26 @@
 </template>
 
 <script>
+import { ref } from 'vue'
+
 export default {
   name: 'SearchBar',
   props: {
     label: {
       type: String,
-      required: true,
+      required: true
     },
     name: {
       type: String,
-      required: true,
+      required: true
     },
     type: {
       type: String,
-      default: "text",
+      default: 'text'
     },
     isRequired: {
       type: Boolean,
-      default: 'false'
+      default: false
     },
     placeholder: {
       type: String,
@@ -39,14 +41,14 @@ export default {
     },
     value: {
       type: String,
-      default: '',
+      default: ''
     },
     onChange: {
       type: Function,
-      default: null,
+      default: null
     }
   },
-  setup(props) {
+  setup (props) {
     const searchValue = ref(props.value)
 
     // Fonction qui gère les changements dans l'input
@@ -57,10 +59,14 @@ export default {
         props.onChange(event)
       }
     }
-  }  
+    return {
+      searchValue,
+      handleInputChange
+    }
+  }
 }
 
 </script>
 <style>
-  
+
 </style>
