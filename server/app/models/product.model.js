@@ -12,7 +12,7 @@ module.exports = (connex, Sequelize) => {
       description: {
           type: Sequelize.TEXT
       },
-      type: {
+      category: {
           type: Sequelize.STRING
       }
   })
