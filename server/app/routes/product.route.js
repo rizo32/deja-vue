@@ -10,7 +10,7 @@ module.exports = app => {
 
   router.delete('/:id', product.myDestroy)
 
-  router.put('/:id', product.myUpdate)
+  router.put('/product-edit/:id', product.myUpdate)
 
   app.use('/api/products', router)
 }
