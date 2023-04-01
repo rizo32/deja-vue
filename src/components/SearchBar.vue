@@ -5,13 +5,15 @@
       :name="name"
       :placeholder="placeholder"
       :type="type"
-      :value="searchValue"
-      @input="handleInputChange"
+      :value="value"
+      @input="$emit('update:value', $event.target.value)"
       class="form-control"
       :required="isRequired"
     />
   </div>
 </template>
+<!-- @input="$emit('update:value', $event.target.value)" -->
+<!-- @input="handleInputChange" -->
 
 <script>
 import { ref } from 'vue'

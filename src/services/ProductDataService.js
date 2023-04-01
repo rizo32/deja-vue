@@ -5,19 +5,19 @@ class ProductDataService {
   }
 
   create (data) {
-    return http.post('/product', data)
+    return http.post('/products', data)
   }
 
   get (id) {
-    return http.get(`/product/${id}`)
+    return http.get(`/products/${id}`)
   }
 
   delete (id) {
-    return http.delete(`/product/${id}`)
+    return http.delete(`/products/${id}`)
   }
 
   update (id, data) {
-    return http.put(`/product/${id}`, data)
+    return http.put(`/products/product-edit/${id}`, data)
   }
 }
 export default new ProductDataService()

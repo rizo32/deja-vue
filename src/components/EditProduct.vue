@@ -1,44 +1,44 @@
 <template>
   <div class="container py-1 d-flex flex-column gap-5 w-50">
     <form
-      @submit.prevent="onSubmit"
+      @submit.prevent="editProduct"
       class="bg-light container border border-info rounded py-4"
     >
-      <h3 class="text-center">{{ product.name }}</h3>
+      <h3 class="text-center">{{ editedProduct.name }}</h3>
       <SearchBar
         type="text"
-        :value="product.name"
+        :value="editedProduct.name"
         name="name"
         label="Name"
-        @change="handleValueChange"
+        @update:value="handleValueChange($event, 'name')"
       />
       <SearchBar
         type="text"
-        :value="product.category"
+        :value="editedProduct.category"
         name="category"
         label="Category"
-        @change="handleValueChange"
+        @update:value="handleValueChange($event, 'category')"
       />
       <SearchBar
         type="number step=0.01"
-        :value="product.price"
+        :value="editedProduct.price"
         name="price"
         label="Price"
-        @change="handleValueChange"
+        @update:value="handleValueChange($event, 'price')"
       />
       <SearchBar
         type="text"
-        :value="product.description"
+        :value="editedProduct.description"
         name="description"
         label="Description"
-        @change="handleValueChange"
+        @update:value="handleValueChange($event, 'description')"
       />
       <div class="text-center">
         <div class="d-flex justify-content-evenly py-3">
           <div class="lead pointer">
             <router-link
               class="text-dark text-decoration-none"
-              :to="`/products/${product.id}`">
+              :to="`/product/${editedProduct.id}`">
               <span>Back </span>
               <FaArrowLeft />
             </router-link>
@@ -51,8 +51,9 @@
 </template>
 <script>
 import SearchBar from './SearchBar'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, reactive, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import ProductDataService from '@/services/ProductDataService'
 
 export default {
   name: 'EditProduct',
@@ -65,18 +66,28 @@ export default {
     const route = useRoute()
     const router = useRouter()
     const productId = ref(route.params.id)
-    const product = computed(() =>
-      props.products.find((product) => product.id === parseInt(productId.value))
+    const product = computed(() => {
+      const product = props.products.find(product => product.id === parseInt(productId.value))
+      return { ...product }
+    }
+    // props.products.find((product) => product.id === parseInt(productId.value))
     )
+    const editedProduct = reactive({ ...product.value })
 
-    const handleValueChange = (event) => {
-      const { name, value } = event.target
-      product.value[name] = value
+    const handleValueChange = (value, searchBarName) => {
+      // console.log(value, searchBarName)
+      editedProduct[searchBarName] = value
     }
 
-    const onSubmit = () => {
-      props.onProductUpdate(product.value)
-      router.push('/products')
+    const editProduct = () => {
+      ProductDataService.update(product.value.id, editedProduct)
+        .then(response => {
+          props.onProductUpdate({ ...editedProduct })
+          router.push({ name: 'products' })
+        })
+        .catch(e => {
+          this.message = e.response.data.message
+        })
     }
 
     onMounted(() => {
@@ -85,8 +96,9 @@ export default {
 
     return {
       product,
+      editedProduct,
       handleValueChange,
-      onSubmit
+      editProduct
     }
   }
 }
