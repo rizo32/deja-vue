@@ -38,8 +38,6 @@
         name="description"
         label="Description"
       />
-      <!-- @update:value="handleValueChange($event, searchBarName)" -->
-      <!-- @onChange="handleValueChange" -->
 
       <div class="d-flex justify-content-evenly py-3">
         <div class="lead pointer">
@@ -49,7 +47,6 @@
           </router-link>
         </div>
         <input class="lead" type="submit" value="Create" />
-        <!-- <button class="" type="button" @click="saveProduct">Create </button> -->
       </div>
     </form>
   </div>
@@ -58,17 +55,13 @@
 <script>
 import SearchBar from '@/components/SearchBar'
 import ProductDataService from '@/services/ProductDataService'
-// import { ref } from 'vue'
-// import { useRouter } from 'vue-router'
 
 export default {
   name: 'AddProduct',
   components: {
     SearchBar
   },
-  props: {
-    onProductAdd: Function
-  },
+  inject: ['handleProductAdd'],
   data () {
     return {
       newProduct: {
@@ -90,8 +83,10 @@ export default {
         .then(response => {
           console.log(response.data)
           this.newProduct.id = response.data.id
-          this.$router.push({ name: 'products' })
-          console.log(this.submitted)
+          console.log(this.newProduct)
+          this.handleProductAdd(this.newProduct)
+          this.message = null
+          this.submitted = true
         })
         .catch(e => {
           console.log(e.response.data.message)
@@ -99,25 +94,6 @@ export default {
         })
     }
   }
-
-  // Gestion de la soumission du formulaire
-  // const router = useRouter()
-  // const onSubmit = () => {
-  //   props.onProductAdd(newProduct.value)
-  //   newProduct.value = {
-  //     name: '',
-  //     price: '',
-  //     description: '',
-  //     category: ''
-  //   }
-  //   router.push('/products')
-  // },
-
-  // return {
-  //   newProduct,
-  //   handleValueChange,
-  //   onSubmit
-  // }
 }
 
 </script>

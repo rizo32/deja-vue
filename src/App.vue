@@ -1,7 +1,7 @@
 <template>
   <div>
     <app-header :routes="routes" title="Target Canada" />
-    <router-view :products="products" :onDelete="handleProductDeleted" :onProductUpdate="updateProduct" :onProductAdd="handleProductAdd" />
+    <router-view :products="products" :onDelete="handleProductDeleted" :onProductUpdate="updateProduct" />
     <app-footer :year="currentYear" />
   </div>
 </template>
@@ -20,6 +20,11 @@ export default {
   components: {
     AppHeader,
     AppFooter
+  },
+  provide () {
+    return {
+      handleProductAdd: this.handleProductAdd
+    }
   },
   data () {
     return {
@@ -56,38 +61,18 @@ export default {
     },
 
     // Add
-    // handleProductAdd () {
-    //   ProductDataService.create(this.product)
-    //     .then(response => {
-    //       // console.log(response.data)
-    //       this.product.id = response.data.id
-    //       this.addInv(this.product)
-    //       this.message = null
-    //       this.submitted = true
-    //       // this.$router.push({ name: 'home' })
-    //       // console.log(this.submitted)
-    //     })
-    //     .catch(e => {
-    //       console.log(e.response.data.message)
-    //       this.message = e.response.data.message
-    //     })
-    // },
+    handleProductAdd (newProduct) {
+      console.log(newProduct)
+      this.products.push(newProduct)
+      this.$router.push({ name: 'products' })
 
-    // // Add
-    // handleProductAdd: async function (product) {
-    //   const res = await fetch('http://localhost:8080/api/products', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-type': 'application/json'
-    //     },
-    //     body: JSON.stringify(product)
-    //   })
-
-    //   // On crée un nouvel array de produits en ajoutant le nouveau produit
-    //   const newProduct = await res.json()
-    //   const updatedProducts = [...this.products, newProduct]
-    //   this.products = updatedProducts
-    // },
+      // this.$router.push({ name: 'home' })
+      // console.log(this.submitted)
+      //   On crée un nouvel array de produits en ajoutant le nouveau produit
+      //   const newProduct = await res.json()
+      //   const updatedProducts = [...this.products, newProduct]
+      //   this.products = updatedProducts
+    },
 
     // Edit
     updateProduct (updatedProduct) {
