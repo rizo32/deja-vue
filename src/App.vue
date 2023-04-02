@@ -42,36 +42,22 @@ export default {
         console.log(error)
       })
   },
-  // created () {
-  //   axios.get('data/products-db.json')
-  //     .then(response => {
-  //       this.products = response.data.products
-  //     })
-  //     .catch(error => {
-  //       console.log(error)
-  //     })
-  // },
+
   methods: {
     // Delete
     handleProductDeleted (id) {
-      const index = this.products.findIndex(product => product.id === id)
-      this.products.splice(index, 1)
-      // const updatedProducts = this.products.filter(product => product.id !== id)
-      // this.products = updatedProducts
+      // const index = this.products.findIndex(product => product.id === id)
+      // this.products.splice(index, 1)
+      const updatedProducts = this.products.filter(product => product.id !== id)
+      this.products = updatedProducts
+      this.$router.push({ name: 'products' })
     },
 
     // Add
     handleProductAdd (newProduct) {
-      console.log(newProduct)
+      //   On crée un nouvel array de produits en ajoutant le nouveau produit
       this.products.push(newProduct)
       this.$router.push({ name: 'products' })
-
-      // this.$router.push({ name: 'home' })
-      // console.log(this.submitted)
-      //   On crée un nouvel array de produits en ajoutant le nouveau produit
-      //   const newProduct = await res.json()
-      //   const updatedProducts = [...this.products, newProduct]
-      //   this.products = updatedProducts
     },
 
     // Edit
