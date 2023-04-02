@@ -27,7 +27,6 @@ exports.myFindOne = (req, res) => {
 }
 
 exports.myCreate = (req, res) => {
-    // console.log(req.body)
     if(!req.body.name) {
         res.status(400).send({
             message: 'The name is mandatory'
