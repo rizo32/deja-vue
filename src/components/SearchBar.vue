@@ -5,18 +5,15 @@
       :name="name"
       :placeholder="placeholder"
       :type="type"
-      :value="value"
-      @input="$emit('update:value', $event.target.value)"
-      class="form-control"
+      :value="isFileType ? undefined : value"
+      @input="isFileType ? $emit('update:file', $event.target.files[0]) : $emit('update:value', $event.target.value)"      class="form-control"
       :required="isRequired"
     />
   </div>
 </template>
-<!-- @input="$emit('update:value', $event.target.value)" -->
-<!-- @input="handleInputChange" -->
 
 <script>
-import { ref } from 'vue'
+// import { ref } from 'vue'
 
 export default {
   name: 'SearchBar',
@@ -29,41 +26,30 @@ export default {
       type: String,
       required: true
     },
-    type: {
-      type: String,
-      default: 'text'
-    },
-    isRequired: {
-      type: Boolean,
-      default: false
-    },
     placeholder: {
       type: String,
       default: ''
     },
+    type: {
+      type: String,
+      default: 'text'
+    },
     value: {
       type: String,
       default: ''
+    },
+    isRequired: {
+      type: Boolean,
+      default: false
     },
     onChange: {
       type: Function,
       default: null
     }
   },
-  setup (props) {
-    const searchValue = ref(props.value)
-
-    // Fonction qui gère les changements dans l'input
-    const handleInputChange = (event) => {
-      searchValue.value = event.target.value
-      // Vérifie si la fonction onChange est passée en prop, si oui l'appelle
-      if (props.onChange) {
-        props.onChange(event)
-      }
-    }
-    return {
-      searchValue,
-      handleInputChange
+  computed: {
+    isFileType () {
+      return this.type === 'file'
     }
   }
 }
