@@ -12,15 +12,11 @@
         label="Name"
         :is-required="true"
       />
-      <search-bar
-        type="text"
-        :value="newProduct.category"
-        @update:value="handleValueChange($event, 'category')"
-        placeholder="ex. Laptop"
-        name="category"
-        label="Category"
-        :is-required="true"
-      />
+      <select v-model="newProduct.category" name="newProduct.category" class="form-control">
+        <option value="Laptop">Laptop</option>
+        <option value="Phone">Phone</option>
+        <option value="Console">Console</option>
+      </select>
       <search-bar
         type="number step=0.01"
         :value="newProduct.price"
@@ -37,6 +33,12 @@
         placeholder="ex. blabla"
         name="description"
         label="Description"
+      />
+      <search-bar
+        type="file"
+        @update:file="handleFileChange($event)"
+        name="photo"
+        label="Picture"
       />
 
       <div class="d-flex justify-content-evenly py-3">
@@ -55,6 +57,7 @@
 <script>
 import SearchBar from '@/components/SearchBar'
 import ProductDataService from '@/services/ProductDataService'
+import axios from '@/http-common'
 
 export default {
   name: 'AddProduct',
@@ -67,8 +70,9 @@ export default {
       newProduct: {
         name: '',
         price: '',
+        category: 'Laptop', // default value
         description: '',
-        category: ''
+        photo: ''
       }
     }
   },
@@ -77,13 +81,36 @@ export default {
     handleValueChange (value, searchBarName) {
       this.newProduct[searchBarName] = value
     },
+    handleFileChange (file) {
+      console.log(file)
+      this.newProduct.photo = file
+    },
+    async saveProduct (e) {
+      if (this.newProduct.photo) {
+        const formData = new FormData()
+        formData.append('file', this.newProduct.photo)
 
-    saveProduct (e) {
+        try {
+          const response = await axios.post('/products/files', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+
+          // Remove the server root directory from the filePath
+          const filePath = response.data.filePath.replace(/^.*uploads/, 'uploads').replace(/\\/g, '/')
+
+          // Update the newProduct.photo property with the uploaded file's URL or path
+          this.newProduct.photo = filePath
+        } catch (error) {
+          console.log('Error uploading the file:', error)
+          this.message = 'Error uploading the file.'
+          return
+        }
+      }
       ProductDataService.create(this.newProduct)
         .then(response => {
-          console.log(response.data)
           this.newProduct.id = response.data.id
-          console.log(this.newProduct)
           this.handleProductAdd(this.newProduct)
           this.message = null
           this.submitted = true
