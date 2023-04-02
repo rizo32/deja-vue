@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-light container border border-info rounded py-4">
+  <div class="bg-light container border border-info rounded py-4" v-if="productExists">
     <div class="text-center">
       <h3 v-if="onDelete">{{product.name}}</h3>
       <router-link v-else :to="'/product/' + product.id">
@@ -18,6 +18,7 @@
       <b>Description: </b>
       {{product.description}}
     </li>
+    <img :src="'http://localhost:8080/' + product.photo" class="logo" alt="product">
     <!-- Si onDelete existe, c'est parce qu'on vient de EditProduct, et pas la page liste Products -->
     <li v-if="onDelete" class="no-bullets p-2">
       <ColoredLine color="red" />
@@ -34,7 +35,7 @@
             <font-awesome-icon icon="fa-solid fa-wrench" />
           </router-link>
         </div>
-        <div class="lead pointer" @click=onDelete(product.id)>
+        <div class="lead pointer" @click="deleteProduct(product.id)">
           <span>Delete </span>
           <font-awesome-icon icon="fa-solid fa-xmark" class="text-danger" />
         </div>
@@ -45,12 +46,19 @@
 
 <script>
 import ColoredLine from './ColoredLine'
+import ProductDataService from '@/services/ProductDataService'
 
 export default {
   name: 'SingleProduct',
 
   components: {
     ColoredLine
+  },
+
+  computed: {
+    productExists () {
+      return !!this.product
+    }
   },
 
   props: {
@@ -61,6 +69,21 @@ export default {
     onDelete: {
       type: Function,
       required: false
+    }
+  },
+  methods: {
+    deleteProduct (id) {
+      this.onDelete(id)
+      ProductDataService.delete(id)
+        .then(response => {
+          console.log(response.data)
+          this.message = null
+          this.submitted = true
+        })
+        .catch(e => {
+          console.log(e.response.data.message)
+          this.message = e.response.data.message
+        })
     }
   }
 }
