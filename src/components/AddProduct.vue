@@ -109,6 +109,9 @@ export default {
           this.message = 'Error uploading the file.'
           return
         }
+      } else {
+        // Set the default picture path when no photo is submitted
+        this.newProduct.photo = 'uploads/placeholder.png'
       }
       ProductDataService.create(this.newProduct)
         .then(response => {

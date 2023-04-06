@@ -74,6 +74,7 @@ export default {
     const route = useRoute()
     const router = useRouter()
     const productId = ref(route.params.id)
+    const editedFile = ref(null)
     const product = computed(() => {
       const product = props.products.find(product => product.id === parseInt(productId.value))
       return { ...product }
@@ -82,22 +83,25 @@ export default {
     const editedProduct = reactive({ ...product.value })
 
     const handleValueChange = (value, searchBarName) => {
-      // console.log(value, searchBarName)
       editedProduct[searchBarName] = value
     }
     // eslint-disable-next-line no-unused-vars
-    const handleFileChange = async (file) => {
-      if (file) {
-        try {
-          const filePath = await uploadFile(file)
-          editedProduct.photo = filePath
-        } catch (error) {
-          console.log('Error uploading the file:', error)
-          this.message = 'Error uploading the file.'
-        }
-      }
+    const handleFileChange = (file) => {
+      editedFile.value = file
     }
+    // const handleFileChange = async (file) => {
+    //   if (file) {
+    //     try {
+    //       const filePath = await uploadFile(file)
+    //       editedProduct.photo = filePath
+    //     } catch (error) {
+    //       console.log('Error uploading the file:', error)
+    //       this.message = 'Error uploading the file.'
+    //     }
+    //   }
+    // }
 
+    // eslint-disable-next-line no-unused-vars
     const uploadFile = async (file) => {
       const formData = new FormData()
       formData.append('file', file)
@@ -114,15 +118,41 @@ export default {
       return filePath
     }
 
-    const editProduct = () => {
-      ProductDataService.update(product.value.id, editedProduct)
-        .then(response => {
-          props.onProductUpdate({ ...editedProduct })
-          router.push({ name: 'products' })
-        })
-        .catch(e => {
-          this.message = e.response.data.message
-        })
+    const editProduct = async () => {
+      try {
+        if (editedProduct.value) {
+          const formData = new FormData()
+          formData.append('file', editedProduct.value)
+          try {
+            const response = await axios.post('/products/files', formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            })
+            // Remove the server root directory from the filePath
+            const filePath = response.data.filePath.replace(/^.*uploads/, 'uploads').replace(/\\/g, '/')
+            // Update the newProduct.photo property with the uploaded file's URL or path
+            editedProduct.value = filePath
+          } catch (error) {
+            console.log('Error uploading the file:', error)
+            this.message = 'Error uploading the file.'
+            return
+          }
+          // const filePath = await uploadFile(editedProduct.photo)
+          // editedProduct.photo = filePath
+        }
+        ProductDataService.update(product.value.id, editedProduct)
+          .then((response) => {
+            props.onProductUpdate({ ...editedProduct })
+            router.push({ name: 'products' })
+          })
+          .catch((e) => {
+            this.message = e.response.data.message
+          })
+      } catch (error) {
+        console.log('Error uploading the file:', error)
+        this.message = 'Error uploading the file.'
+      }
     }
 
     onMounted(() => {
