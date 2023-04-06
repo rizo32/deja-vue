@@ -12,13 +12,14 @@
         label="Name"
         @update:value="handleValueChange($event, 'name')"
       />
-      <SearchBar
-        type="text"
-        :value="editedProduct.category"
-        name="category"
-        label="Category"
-        @update:value="handleValueChange($event, 'category')"
-      />
+      <div className="no-bullets p-2">
+        <label for="newProduct.category"><b>Category</b></label>
+      <select v-model="editedProduct.category" name="newProduct.category" class="form-control">
+        <option value="Laptop">Laptop</option>
+        <option value="Phone">Phone</option>
+        <option value="Console">Console</option>
+      </select>
+      </div>
       <SearchBar
         type="number step=0.01"
         :value="editedProduct.price"
@@ -32,6 +33,12 @@
         name="description"
         label="Description"
         @update:value="handleValueChange($event, 'description')"
+      />
+      <search-bar
+        type="file"
+        @change="handleFileChange($event.target.files[0])"
+        name="photo"
+        label="Picture"
       />
       <div class="text-center">
         <div class="d-flex justify-content-evenly py-3">
@@ -50,10 +57,11 @@
   </div>
 </template>
 <script>
-import SearchBar from './SearchBar'
+import SearchBar from '@/components/SearchBar'
 import { ref, computed, reactive, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ProductDataService from '@/services/ProductDataService'
+import axios from '@/http-common'
 
 export default {
   name: 'EditProduct',
@@ -70,13 +78,40 @@ export default {
       const product = props.products.find(product => product.id === parseInt(productId.value))
       return { ...product }
     }
-    // props.products.find((product) => product.id === parseInt(productId.value))
     )
     const editedProduct = reactive({ ...product.value })
 
     const handleValueChange = (value, searchBarName) => {
       // console.log(value, searchBarName)
       editedProduct[searchBarName] = value
+    }
+    // eslint-disable-next-line no-unused-vars
+    const handleFileChange = async (file) => {
+      if (file) {
+        try {
+          const filePath = await uploadFile(file)
+          editedProduct.photo = filePath
+        } catch (error) {
+          console.log('Error uploading the file:', error)
+          this.message = 'Error uploading the file.'
+        }
+      }
+    }
+
+    const uploadFile = async (file) => {
+      const formData = new FormData()
+      formData.append('file', file)
+      const response = await axios.post('/products/files', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+
+      // Remove the server root directory from the filePath
+      const filePath = response.data.filePath
+        .replace(/^.*uploads/, 'uploads')
+        .replace(/\\/g, '/')
+      return filePath
     }
 
     const editProduct = () => {

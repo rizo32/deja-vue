@@ -12,11 +12,14 @@
         label="Name"
         :is-required="true"
       />
-      <select v-model="newProduct.category" name="newProduct.category" class="form-control">
-        <option value="Laptop">Laptop</option>
-        <option value="Phone">Phone</option>
-        <option value="Console">Console</option>
-      </select>
+      <div className="no-bullets p-2">
+        <label for="newProduct.category"><b>Category</b></label>
+        <select v-model="newProduct.category" name="newProduct.category" class="form-control">
+          <option value="Laptop">Laptop</option>
+          <option value="Phone">Phone</option>
+          <option value="Console">Console</option>
+        </select>
+      </div>
       <search-bar
         type="number step=0.01"
         :value="newProduct.price"
@@ -82,7 +85,6 @@ export default {
       this.newProduct[searchBarName] = value
     },
     handleFileChange (file) {
-      console.log(file)
       this.newProduct.photo = file
     },
     async saveProduct (e) {
