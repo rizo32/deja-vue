@@ -36,7 +36,6 @@ export default {
     ProductDataService.getAll()
       .then(response => {
         this.products = response.data
-        // console.log(response.data)
       })
       .catch(error => {
         console.log(error)
@@ -46,8 +45,6 @@ export default {
   methods: {
     // Delete
     handleProductDeleted (id) {
-      // const index = this.products.findIndex(product => product.id === id)
-      // this.products.splice(index, 1)
       const updatedProducts = this.products.filter(product => product.id !== id)
       this.products = updatedProducts
       this.$router.push({ name: 'products' })

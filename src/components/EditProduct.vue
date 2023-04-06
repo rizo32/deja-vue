@@ -89,17 +89,6 @@ export default {
     const handleFileChange = (file) => {
       editedFile.value = file
     }
-    // const handleFileChange = async (file) => {
-    //   if (file) {
-    //     try {
-    //       const filePath = await uploadFile(file)
-    //       editedProduct.photo = filePath
-    //     } catch (error) {
-    //       console.log('Error uploading the file:', error)
-    //       this.message = 'Error uploading the file.'
-    //     }
-    //   }
-    // }
 
     // eslint-disable-next-line no-unused-vars
     const uploadFile = async (file) => {
@@ -138,8 +127,6 @@ export default {
             this.message = 'Error uploading the file.'
             return
           }
-          // const filePath = await uploadFile(editedProduct.photo)
-          // editedProduct.photo = filePath
         }
         ProductDataService.update(product.value.id, editedProduct)
           .then((response) => {
